@@ -8,7 +8,9 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
+  youtube_explode_dart: 3.1.0
   path: ^1.9.0
+  args: ^2.7.0
 
 dev_dependencies:
   lints: ^6.0.0

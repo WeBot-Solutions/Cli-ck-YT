@@ -1,2 +1,8 @@
-A sample command-line application with an entrypoint in `bin/`, library code
-in `lib/`, and example unit test in `test/`.
+# A Youtube Video Downloader Writen in dart, 
+
+
+## Dependencies: 
+- youtube_explode_dart
+- args
+
+## External Dependencies (For Maximum Video Quality)

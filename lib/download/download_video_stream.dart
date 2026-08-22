@@ -1,50 +1,78 @@
-import 'dart:collection';
 import 'dart:io';
 
-import 'package:cli_ck_y_t/core/exit_with_error.dart';
+import 'package:cli_ck_y_t/utils/bytes_to_megabytes.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class YoutubeDownloader {
   final YoutubeExplode yt;
-  String? outputName;
-  final String? id;
+  late String id;
   StreamManifest? manifest;
 
-  YoutubeDownloader({required String url, String? output})
-    : yt = YoutubeExplode(),
-      outputName = '$output.mp4',
-      id = VideoId(url).value;
+  YoutubeDownloader() : yt = YoutubeExplode();
 
   void downloadMuxedVideo() async {
-    manifest ??= await yt.videos.streamsClient.getManifest(id!);
+    if (manifest == null) throw Exception('Manifest Not Initialized');
+
     var streamInfo = manifest!.muxed.bestQuality;
     var stream = yt.videos.streams.get(streamInfo);
-    outputName ??= 'exampleName';
 
-    saveFile(stream);
-  }
+    var videoInfo = await yt.videos.get(id);
 
-  void printInfo() {
-    print(yt);
-    print(id);
-  }
+    var (fileStream, filename) = getFileStream(
+      streamInfo: streamInfo,
+      videoName: videoInfo.title,
+    );
 
-  Future<void> getAudioQualities() async {
-    manifest ??= await yt.videos.streamsClient.getManifest(id!);
-    print("Audio Qualities Available: ");
-    for (var stream in manifest!.audioOnly) {
-      print('- ${stream.bitrate} kbps (${stream.container})');
+    // Download Progress
+
+    stdout.writeln('Descargando: $filename');
+
+    var totalBytes = streamInfo.size.totalBytes;
+    var downloadedBytes = 0;
+
+    await for (final chunk in stream) {
+      fileStream.add(chunk);
+      downloadedBytes += chunk.length;
+
+      printDownloadInfo(
+        streamInfo: streamInfo,
+        downloadedBytes: downloadedBytes,
+        totalBytes: totalBytes,
+      );
     }
-  }
 
-  void saveFile(Stream<List<int>> stream) async {
-    var file = File(outputName!);
-
-    var fileStream = file.openWrite();
-
-    await stream.pipe(fileStream);
+    stdout.writeln('\nDescarga Completada!!');
 
     await fileStream.flush();
     await fileStream.close();
+  }
+
+  void printDownloadInfo({
+    required MuxedStreamInfo streamInfo,
+    required int downloadedBytes,
+    required int totalBytes,
+  }) {
+    double progress = (downloadedBytes / totalBytes) * 100;
+
+    stdout.write(
+      '\rProgress: ${byteToMb(downloadedBytes)} MB / ${byteToMb(totalBytes)} MB  - ${progress.toStringAsFixed(1)}%',
+    );
+  }
+
+  (IOSink, String) getFileStream({
+    required MuxedStreamInfo streamInfo,
+    required String videoName,
+  }) {
+    var filename = '$videoName.${streamInfo.container.name}';
+    var file = File(filename);
+
+    file.create(recursive: true);
+
+    return (file.openWrite(), filename);
+  }
+
+  Future<void> getManifest(String url) async {
+    id = VideoId(url).value;
+    manifest = await yt.videos.streamsClient.getManifest(id);
   }
 }

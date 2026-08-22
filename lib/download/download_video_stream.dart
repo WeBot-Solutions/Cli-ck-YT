@@ -20,13 +20,8 @@ class YoutubeDownloader {
     var streamInfo = manifest!.muxed.bestQuality;
     var stream = yt.videos.streams.get(streamInfo);
     outputName ??= 'exampleName';
-    var file = File(outputName!);
 
-    var fileStream = file.openWrite();
-    await stream.pipe(fileStream);
-
-    await fileStream.flush();
-    await fileStream.close();
+    saveFile(stream);
   }
 
   void printInfo() {
@@ -40,5 +35,16 @@ class YoutubeDownloader {
     for (var stream in manifest!.audioOnly) {
       print('- ${stream.bitrate} kbps (${stream.container})');
     }
+  }
+
+  void saveFile(Stream<List<int>> stream) async {
+    var file = File(outputName!);
+
+    var fileStream = file.openWrite();
+
+    await stream.pipe(fileStream);
+
+    await fileStream.flush();
+    await fileStream.close();
   }
 }

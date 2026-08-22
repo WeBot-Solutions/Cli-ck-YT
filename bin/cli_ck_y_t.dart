@@ -16,7 +16,7 @@ void main(List<String> arguments) {
   var outputName = results['output'] as String?;
 
   if (url != null) {
-    var ytDownloader = YoutubeDownloader(url: url);
-    ytDownloader.getAudioQualities();
+    var ytDownloader = YoutubeDownloader(url: url, output: outputName);
+    ytDownloader.downloadMuxedVideo();
   }
 }

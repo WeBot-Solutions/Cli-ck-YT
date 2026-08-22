@@ -12,7 +12,7 @@ class YoutubeDownloader {
 
   YoutubeDownloader({required String url, String? output})
     : yt = YoutubeExplode(),
-      outputName = output,
+      outputName = '$output.mp4',
       id = VideoId(url).value;
 
   void downloadMuxedVideo() async {

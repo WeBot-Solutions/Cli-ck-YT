@@ -5,6 +5,8 @@ import 'package:cli_ck_y_t/download/download_video_stream.dart';
 
 import 'dart:io';
 
+import 'package:cli_ck_y_t/utils/extract_youtube_video_id.dart';
+
 void main(List<String> arguments) async {
   var parser = getParser();
   var results = parser.parse(arguments);
@@ -18,7 +20,11 @@ void main(List<String> arguments) async {
 
   if (url != null) {
     var yt = YoutubeDownloader();
-    await yt.getManifest(url);
+    var videoId = extractYouTubeVideoId(url);
+
+    if (videoId == null) showHelp(parser);
+
+    await yt.getManifest(videoId!);
 
     audioSelected ? yt.downloadAudio() : yt.downloadMuxedVideo();
   }

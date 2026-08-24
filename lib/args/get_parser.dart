@@ -1,6 +1,6 @@
 import 'package:args/args.dart';
 
-ArgResults parseArguments(List<String> args) {
+ArgParser getParser() {
   var parser = ArgParser()
     ..addOption('url', abbr: 'u', help: 'Youtube Video Url')
     ..addFlag(
@@ -17,5 +17,5 @@ ArgResults parseArguments(List<String> args) {
     ) // Marcos estuvo aqui
     ..addOption('output', abbr: 'o', help: 'Video Output Name');
 
-  return parser.parse(args);
+  return parser;
 }

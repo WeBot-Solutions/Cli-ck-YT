@@ -7,12 +7,12 @@ void showHelp(ArgParser parser) {
   print('''
  CLI-Ck YT
 
-Uso: dart $programName [opciones]
+Uso: $programName [opciones]
 
 ${parser.usage}
 
 Ejemplos:
-  dart $programName -u https://youtube.com/shorts/_6HzLIJPH2A?si=znltF99g82qpVw_a --audio-only
-  dart $programName -u https://youtu.be/fJ9rUzIMcZQ?si=Dq_2EKelBmhbFjnM 
+  $programName -u https://youtube.com/shorts/_6HzLIJPH2A?si=znltF99g82qpVw_a --audio-only
+  $programName -u https://youtu.be/fJ9rUzIMcZQ?si=Dq_2EKelBmhbFjnM 
 ''');
 }

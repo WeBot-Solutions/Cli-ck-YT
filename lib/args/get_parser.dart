@@ -5,6 +5,7 @@ ArgParser getParser() {
     ..addOption('url', abbr: 'u', help: 'Youtube Video Url')
     ..addFlag(
       'audio-only',
+      abbr: 'a',
       help: 'Download only Audio`s video',
       defaultsTo: false,
     )

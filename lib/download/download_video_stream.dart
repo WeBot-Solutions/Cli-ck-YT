@@ -12,6 +12,7 @@ class YoutubeDownloader {
 
   Future<void> _youtubeDownloader(StreamInfo streamInfo) async {
     var stream = yt.videos.streams.get(streamInfo);
+
     var videoInfo = await yt.videos.get(_id);
 
     var (fileStream, filename) = getFileStream(
@@ -39,22 +40,28 @@ class YoutubeDownloader {
 
     stdout.writeln('\nDescarga Completada!!');
 
+    print('aqui funca1');
+
     await fileStream.flush();
+
+    print('aqui funca2');
     await fileStream.close();
+
+    print('aqui funca3');
   }
 
   // Marcos Code
-  void downloadAudio() async {
+  Future<void> downloadAudio() async {
     if (_manifest == null) throw Exception('Manifest Not Initialized');
-    var streamInfo = _manifest!.audioOnly.withHighestBitrate();
-    await _youtubeDownloader(streamInfo);
+    var streamInfo = _manifest!.audioOnly.first;
+    return await _youtubeDownloader(streamInfo);
   }
 
-  void downloadMuxedVideo() async {
+  Future<void> downloadMuxedVideo() async {
     if (_manifest == null) throw Exception('Manifest Not Initialized');
 
     var streamInfo = _manifest!.muxed.bestQuality;
-    await _youtubeDownloader(streamInfo);
+    return await _youtubeDownloader(streamInfo);
   }
 
   void printDownloadInfo({

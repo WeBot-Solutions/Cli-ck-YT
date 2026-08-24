@@ -12,11 +12,12 @@ void main(List<String> arguments) async {
   // Option Values
   var url = results['url'] as String?;
   var outputName = results['output'] as String?;
+  var audioSelected = results['audio-only'] as bool;
 
   if (url != null) {
     var yt = YoutubeDownloader();
     await yt.getManifest(url);
 
-    yt.downloadMuxedVideo();
+    audioSelected ? yt.downloadAudio() : yt.downloadMuxedVideo();
   }
 }

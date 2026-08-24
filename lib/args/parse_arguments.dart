@@ -9,6 +9,12 @@ ArgResults parseArguments(List<String> args) {
       defaultsTo: false,
     )
     ..addOption('quality', abbr: 'q', help: 'Set Video Quality, default: 480p')
+    ..addFlag(
+      "help",
+      abbr: 'h',
+      help: "show info about how to use",
+      defaultsTo: false,
+    ) // Marcos estuvo aqui
     ..addOption('output', abbr: 'o', help: 'Video Output Name');
 
   return parser.parse(args);

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cli_ck_y_t/args/show_help.dart';
 import 'package:cli_ck_y_t/args/get_parser.dart';
 import 'package:cli_ck_y_t/download/download_video_stream.dart';

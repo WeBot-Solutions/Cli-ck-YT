@@ -5,14 +5,14 @@ import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class YoutubeDownloader {
   final YoutubeExplode yt;
-  late String id;
-  StreamManifest? manifest;
+  late String _id;
+  StreamManifest? _manifest;
 
   YoutubeDownloader() : yt = YoutubeExplode();
 
   Future<void> _youtubeDownloader(StreamInfo streamInfo) async {
     var stream = yt.videos.streams.get(streamInfo);
-    var videoInfo = await yt.videos.get(id);
+    var videoInfo = await yt.videos.get(_id);
 
     var (fileStream, filename) = getFileStream(
       streamInfo: streamInfo,
@@ -45,17 +45,16 @@ class YoutubeDownloader {
 
   // Marcos Code
   void downloadAudio() async {
-    if (manifest == null) throw Exception('Manifest Not Initialized');
-    var streamInfo = manifest!.audioOnly.withHighestBitrate();
+    if (_manifest == null) throw Exception('Manifest Not Initialized');
+    var streamInfo = _manifest!.audioOnly.withHighestBitrate();
     await _youtubeDownloader(streamInfo);
   }
 
   void downloadMuxedVideo() async {
-    if (manifest == null) throw Exception('Manifest Not Initialized');
+    if (_manifest == null) throw Exception('Manifest Not Initialized');
 
-    var streamInfo = manifest!.muxed.bestQuality;
+    var streamInfo = _manifest!.muxed.bestQuality;
     await _youtubeDownloader(streamInfo);
-    }
   }
 
   void printDownloadInfo({
@@ -83,7 +82,7 @@ class YoutubeDownloader {
   }
 
   Future<void> getManifest(String url) async {
-    id = VideoId(url).value;
-    manifest = await yt.videos.streamsClient.getManifest(id);
+    _id = VideoId(url).value;
+    _manifest = await yt.videos.streamsClient.getManifest(_id);
   }
 }

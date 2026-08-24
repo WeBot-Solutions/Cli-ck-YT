@@ -10,12 +10,8 @@ class YoutubeDownloader {
 
   YoutubeDownloader() : yt = YoutubeExplode();
 
-  void downloadMuxedVideo() async {
-    if (manifest == null) throw Exception('Manifest Not Initialized');
-
-    var streamInfo = manifest!.muxed.bestQuality;
+  Future<void> _youtubeDownloader(StreamInfo streamInfo) async {
     var stream = yt.videos.streams.get(streamInfo);
-
     var videoInfo = await yt.videos.get(id);
 
     var (fileStream, filename) = getFileStream(
@@ -47,8 +43,23 @@ class YoutubeDownloader {
     await fileStream.close();
   }
 
+  // Marcos Code
+  void downloadAudio() async {
+    if (manifest == null) throw Exception('Manifest Not Initialized');
+    var streamInfo = manifest!.audioOnly.withHighestBitrate();
+    await _youtubeDownloader(streamInfo);
+  }
+
+  void downloadMuxedVideo() async {
+    if (manifest == null) throw Exception('Manifest Not Initialized');
+
+    var streamInfo = manifest!.muxed.bestQuality;
+    await _youtubeDownloader(streamInfo);
+    }
+  }
+
   void printDownloadInfo({
-    required MuxedStreamInfo streamInfo,
+    required StreamInfo streamInfo,
     required int downloadedBytes,
     required int totalBytes,
   }) {
@@ -60,7 +71,7 @@ class YoutubeDownloader {
   }
 
   (IOSink, String) getFileStream({
-    required MuxedStreamInfo streamInfo,
+    required StreamInfo streamInfo,
     required String videoName,
   }) {
     var filename = '$videoName.${streamInfo.container.name}';
